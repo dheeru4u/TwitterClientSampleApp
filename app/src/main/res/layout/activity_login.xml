@@ -1,0 +1,44 @@
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.dheeru.apps.twitter.LoginActivity">
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tvWelcome"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="120dp"
+        android:src="@mipmap/ic_twitter_bird"/>
+
+    <TextView
+        android:id="@+id/tvWelcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnLogin"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="60dp"
+        android:text="Welcome"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"/>
+
+
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="60dp"
+        android:layout_marginRight="60dp"
+        android:layout_marginBottom="60dp"
+        android:onClick="loginToRest"
+        android:text="@string/login_label"
+        android:background="@android:color/white"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textColor="@color/colorPrimary"/>
+
+</android.support.percent.PercentRelativeLayout>

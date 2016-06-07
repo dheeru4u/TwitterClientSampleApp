@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.makeramen.roundedimageview.RoundedImageView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/ivUserProfileImage"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/ivTopIconRetweet"
+        android:scaleType="centerCrop"
+        app:riv_corner_radius="4dp" />
+
+    <TextView
+        android:id="@+id/tvUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@id/ivUserProfileImage"
+        android:layout_toRightOf="@id/ivUserProfileImage"
+        android:layout_alignTop="@id/ivUserProfileImage"
+        android:textColor="@android:color/black"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvScreenName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
+        android:layout_toEndOf="@id/tvUserName"
+        android:layout_toRightOf="@id/tvUserName"
+        android:layout_alignTop="@id/ivUserProfileImage"
+        android:textColor="@color/colorGrey" />
+
+
+    <TextView
+        android:id="@+id/tvRelativeTimestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:textColor="@color/colorGrey" />
+
+    <TextView
+        android:id="@+id/tvText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/tvUserName"
+        android:layout_alignStart="@id/tvUserName"
+        android:layout_below="@id/tvUserName"
+        android:layout_marginTop="4dp"
+        android:autoLink="all"
+        android:linksClickable="true"
+        android:textColor="@android:color/black"
+        android:textColorLink="@color/colorPrimary"
+        android:fontFamily="sans-serif-light"/>
+
+    <ImageView
+        android:id="@+id/ivIconReply"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_alignLeft="@id/tvText"
+        android:layout_alignStart="@id/tvText"
+        android:layout_below="@+id/rlMedia"
+        android:layout_marginTop="8dp"
+        android:src="@mipmap/ic_reply" />
+
+    <ImageView
+        android:id="@+id/ivIconRetweet"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginLeft="56dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="4dp"
+        android:layout_below="@+id/rlMedia"
+        android:layout_toEndOf="@id/ivIconReply"
+        android:layout_toRightOf="@id/ivIconReply"
+        android:src="@mipmap/ic_retweet" />
+
+    <TextView
+        android:id="@+id/tvRetweets"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rlMedia"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="5dp"
+        android:layout_toEndOf="@id/ivIconRetweet"
+        android:layout_toRightOf="@id/ivIconRetweet"
+        android:textColor="@color/colorGrey" />
+
+    <ImageView
+        android:id="@+id/ivIconLike"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_below="@+id/rlMedia"
+        android:layout_marginLeft="56dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="8dp"
+        android:layout_toEndOf="@id/ivIconRetweet"
+        android:layout_toRightOf="@id/ivIconRetweet"
+        android:src="@mipmap/like" />
+
+    <TextView
+        android:id="@+id/tvLikes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rlMedia"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="5dp"
+        android:layout_toEndOf="@id/ivIconLike"
+        android:layout_toRightOf="@id/ivIconLike"
+        android:textColor="@color/colorGrey" />
+
+    <RelativeLayout
+        android:id="@+id/rlMedia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/tvText"
+        android:layout_alignStart="@id/tvText"
+        android:layout_below="@id/tvText"
+        android:layout_marginTop="4dp">
+
+        <ImageView
+            android:id="@+id/ivMedia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
+            android:visibility="gone" />
+
+        <com.malmstein.fenster.view.FensterVideoView
+            android:id="@+id/fvvVideo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:keepScreenOn="true"
+            android:fitsSystemWindows="true"
+            android:visibility="gone"/>
+
+        <com.malmstein.fenster.controller.SimpleMediaFensterPlayerController
+            android:id="@+id/mfpcVideo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:animateLayoutChanges="false"
+            android:fitsSystemWindows="true"
+            android:visibility="gone"/>
+
+
+        <ImageView
+            android:id="@+id/ivIconVideo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@mipmap/video"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+</merge>

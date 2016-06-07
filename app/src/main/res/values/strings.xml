@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Thakur Twitter App</string>
+    <string name="title_activity_timeline">TimelineActivity</string>
+    <string name="welcome">Welcome to Thakur.</string>
+    <string name="title_activity_tweet_detail">Tweet</string>
+    <string name="retweet">retweet</string>
+    <string name="like">like</string>
+    <string name="tweet">Tweet</string>
+    <string name="logout">Log out</string>
+    <string name="whatshappening">What\'s happening?</string>
+    <string name="compose">Compose</string>
+    <string name="offline_mode">Offline Mode</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login_label">Log In</string>
+    <string name="user">Me</string>
+
+</resources>

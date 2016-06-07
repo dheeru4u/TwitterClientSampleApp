@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".activities.TweetDetailActivity"
+    tools:showIn="@layout/tweet_detail_content">
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_heightPercent="85%">
+
+        <android.support.percent.PercentRelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp">
+
+            <ImageView
+                android:id="@+id/ivTopIconRetweet"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_retweet"
+                android:layout_alignRight="@+id/ivUserProfileImage"
+                android:layout_alignEnd="@+id/ivUserProfileImage"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tvRetweetUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/ivTopIconRetweet"
+                android:layout_toEndOf="@id/ivTopIconRetweet"
+                android:textColor="@color/colorGrey"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:visibility="gone"/>
+
+            <com.makeramen.roundedimageview.RoundedImageView xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/ivUserProfileImage"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/ivTopIconRetweet"
+                android:scaleType="centerCrop"
+                app:riv_corner_radius="4dp" />
+
+            <TextView
+                android:id="@+id/tvUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@id/ivUserProfileImage"
+                android:layout_toRightOf="@id/ivUserProfileImage"
+                android:layout_alignTop="@id/ivUserProfileImage"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvScreenName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/tvUserName"
+                android:layout_alignStart="@id/tvUserName"
+                android:layout_below="@id/tvUserName"
+                android:textColor="@color/colorGrey" />
+
+            <TextView
+                android:id="@+id/tvText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/ivUserProfileImage"
+                android:layout_marginTop="8dp"
+                android:autoLink="all"
+                android:linksClickable="true"
+                android:textColor="@android:color/black"
+                android:textColorLink="@color/colorPrimary"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-light"/>
+
+            <RelativeLayout
+                android:id="@+id/rlMedia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/tvText"
+                android:layout_alignStart="@id/tvText"
+                android:layout_below="@id/tvText"
+                android:layout_marginTop="4dp">
+
+                <ImageView
+                    android:id="@+id/ivMedia"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitCenter"
+                    android:visibility="gone" />
+
+                <com.malmstein.fenster.view.FensterVideoView
+                    android:id="@+id/fvvVideo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:keepScreenOn="true"
+                    android:fitsSystemWindows="true"
+                    android:visibility="gone"/>
+
+                <com.malmstein.fenster.controller.SimpleMediaFensterPlayerController
+                    android:id="@+id/mfpcVideo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:animateLayoutChanges="false"
+                    android:fitsSystemWindows="true"
+                    android:visibility="gone"/>
+
+                <ImageView
+                    android:id="@+id/ivIconVideo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_video"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tvCreationTimestamp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/rlMedia"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/colorGrey" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/tvCreationTimestamp"
+                android:background="@color/colorGrey" />
+
+            <TextView
+                android:id="@+id/tvRetweetNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/tvCreationTimestamp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:textAllCaps="true"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvRetweetLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvCreationTimestamp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="8dp"
+                android:layout_toEndOf="@id/tvRetweetNumber"
+                android:layout_toRightOf="@id/tvRetweetNumber"
+                android:text="@string/retweet"
+                android:textAllCaps="true"
+                android:textColor="@color/colorGrey" />
+
+            <TextView
+                android:id="@+id/tvLikeNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvCreationTimestamp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_toEndOf="@id/tvRetweetLabel"
+                android:layout_toRightOf="@id/tvRetweetLabel"
+                android:textAllCaps="true"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvLikeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvCreationTimestamp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="8dp"
+                android:layout_toEndOf="@id/tvLikeNumber"
+                android:layout_toRightOf="@id/tvLikeNumber"
+                android:text="@string/like"
+                android:textAllCaps="true"
+                android:textColor="@color/colorGrey" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/tvRetweetLabel"
+                android:background="@color/colorGrey" />
+
+            <ImageView
+                android:id="@+id/ivIconReply"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:layout_below="@+id/tvRetweetLabel"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_toEndOf="@id/ivIconReply"
+                android:layout_toRightOf="@id/ivIconReply"
+                android:src="@drawable/ic_reply"
+                app:layout_widthPercent="19%" />
+
+            <ImageView
+                android:id="@+id/ivIconRetweet"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_below="@+id/tvRetweetLabel"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_toEndOf="@id/ivIconReply"
+                android:layout_toRightOf="@id/ivIconReply"
+                android:src="@drawable/ic_retweet"
+                app:layout_widthPercent="25%" />
+
+            <ImageView
+                android:id="@+id/ivIconLike"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:layout_below="@+id/tvRetweetLabel"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_toEndOf="@id/ivIconRetweet"
+                android:layout_toRightOf="@id/ivIconRetweet"
+                android:src="@drawable/ic_like"
+                app:layout_widthPercent="25%" />
+
+            <ImageView
+                android:id="@+id/ivIconShare"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:layout_below="@+id/tvRetweetLabel"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_toEndOf="@id/ivIconLike"
+                android:layout_toRightOf="@id/ivIconLike"
+                android:src="@drawable/ic_share"
+                app:layout_widthPercent="25%" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/ivIconReply"
+                android:background="@color/colorGrey" />
+
+        </android.support.percent.PercentRelativeLayout>
+
+    </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/rlReplyPlaceholder"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_heightPercent="20%"
+        android:layout_alignParentBottom="true">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_above="@+id/tvReplyPlaceholder"
+            android:background="@color/colorGrey" />
+
+        <TextView
+            android:id="@+id/tvReplyPlaceholder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/underline"
+            android:layout_marginEnd="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/colorGrey"
+            android:textSize="16dp"/>
+
+        <View
+            android:id="@+id/underline"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginStart="4dp"
+            android:background="@color/colorGrey" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlReplyBox"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_heightPercent="20%"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/border_reply_box"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/etReply"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/tvTweet"
+            android:inputType="textMultiLine"
+            android:textStyle="normal"
+            android:textSize="16sp"
+            android:backgroundTint="@color/colorPrimary"
+            android:textCursorDrawable="@drawable/color_cursor"/>
+
+        <TextView
+            android:id="@+id/tvTweet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:text="@string/tweet"
+            android:textAllCaps="true"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/border_tweet_label_btn"/>
+
+        <TextView
+            android:id="@+id/tvCharacterCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@id/tvTweet"
+            android:layout_toStartOf="@id/tvTweet"
+            android:textColor="@color/colorGrey"
+            android:padding="8dp"
+            android:layout_margin="8dp"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+
+</android.support.percent.PercentRelativeLayout>

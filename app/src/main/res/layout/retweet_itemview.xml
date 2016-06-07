@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/ivTopIconRetweet"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:src="@mipmap/ic_retweet"
+        android:layout_alignRight="@+id/ivUserProfileImage"
+        android:layout_alignEnd="@+id/ivUserProfileImage"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="visible"/>
+
+    <TextView
+        android:id="@+id/tvRetweetUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/ivTopIconRetweet"
+        android:layout_toEndOf="@id/ivTopIconRetweet"
+        android:textColor="@color/colorGrey"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:visibility="visible"
+        android:text="XYZ Retweeted"/>
+
+    <include layout="@layout/tweets_items_content"/>
+
+</android.support.percent.PercentRelativeLayout>
