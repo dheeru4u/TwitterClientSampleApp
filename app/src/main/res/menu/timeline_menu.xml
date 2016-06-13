@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/menu_logout"
+        android:title="@string/logout"
+        app:showAsAction="never"/>
+    <item android:id="@+id/menu_dm"
+        android:title="@string/dm"
+        android:icon="@mipmap/ic_dm"
+        app:showAsAction="always"/>
+    <item android:id="@+id/menu_search"
+        android:title="@string/search"
+        android:icon="@mipmap/ic_search"
+        app:showAsAction="always"/>
+    <item android:id="@+id/menu_user_profile"
+        android:title="@string/profile"
+        android:icon="@mipmap/profile_pic_tw"
+        app:showAsAction="always"/>
+</menu>

@@ -17,7 +17,7 @@
 
 
     <application
-        android:name=".TwitterRestApplication"
+        android:name=".utility.TwitterRestApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -30,7 +30,7 @@
             android:value="1" />
 
         <activity
-            android:name="com.dheeru.apps.twitter.LoginActivity"
+            android:name=".activities.LoginActivity"
             android:theme="@style/AppTheme"
             android:label="@string/app_name" >
             <intent-filter>
@@ -50,18 +50,53 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.TimelineActivity"
+            android:name=".activities.TimelineMainActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.TweetDetailActivity"
             android:label="@string/title_activity_tweet_detail"
-            android:parentActivityName=".activities.TimelineActivity"
+            android:parentActivityName=".activities.TimelineMainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.TimelineActivity" />
         </activity>
+
+        <activity
+            android:name=".activities.UserProfileActivity"
+            android:label="@string/title_activity_user_profile"
+            android:launchMode="singleTop"
+            android:parentActivityName=".activities.TimelineMainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.TimelineMainActivity" />
+        </activity>
+        <activity
+            android:name=".activities.FriendsActivity"
+            android:label="@string/title_activity_friends"
+            android:parentActivityName=".activities.UserProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.FollowersActivity"
+            android:label="@string/title_activity_followers"
+            android:parentActivityName=".activities.UserProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.SearchActivity"
+            android:label="@string/title_activity_search"
+            android:parentActivityName=".activities.TimelineMainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.TimelineActivity" />
+        </activity>
+        <activity
+            android:name=".activities.DirectMessageActivity"
+            android:label="@string/title_activity_direct_message"
+            android:parentActivityName=".activities.TimelineMainActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

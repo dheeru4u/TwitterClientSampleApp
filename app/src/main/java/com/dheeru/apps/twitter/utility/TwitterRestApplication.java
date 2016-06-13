@@ -1,4 +1,4 @@
-package com.dheeru.apps.twitter;
+package com.dheeru.apps.twitter.utility;
 
 import android.content.Context;
 

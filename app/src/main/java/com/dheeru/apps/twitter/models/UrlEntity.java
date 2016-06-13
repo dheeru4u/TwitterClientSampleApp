@@ -68,4 +68,6 @@ public class UrlEntity extends Entity  {
                 ", displayUrl='" + displayUrl + '\'' +
                 '}';
     }
+
+
 }

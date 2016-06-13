@@ -1,4 +1,4 @@
-package com.dheeru.apps.twitter;
+package com.dheeru.apps.twitter.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +8,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.codepath.oauth.OAuthLoginActionBarActivity;
-import com.dheeru.apps.twitter.activities.TimelineActivity;
+import com.dheeru.apps.twitter.R;
+import com.dheeru.apps.twitter.utility.TwitterRestClient;
 import com.dheeru.apps.twitter.utility.CommonUtils;
 
 public class LoginActivity extends OAuthLoginActionBarActivity<TwitterRestClient> {
@@ -35,7 +36,7 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterRestClient
 	public void onLoginSuccess() {
 		Toast.makeText(this, "onLoginSuccess", Toast.LENGTH_LONG);
 		Log.d(TAG, "onLoginSuccess: ");
-		Intent i = new Intent(this, TimelineActivity.class);
+		Intent i = new Intent(this, TimelineMainActivity.class);
 		startActivity(i);
 	}
 
@@ -53,7 +54,7 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterRestClient
 		Log.d(TAG, "loginToRest: @@@@ ");
 		getClient().connect();
 		if(!CommonUtils.isNetworkAvailable(this) || !CommonUtils.isOnline(this)) {
-			Intent i = new Intent(this, TimelineActivity.class);
+			Intent i = new Intent(this, TimelineMainActivity.class);
 			startActivity(i);
 		} else {
 			getClient().connect();

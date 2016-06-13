@@ -6,7 +6,14 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".activities.TweetDetailActivity"
-    tools:showIn="@layout/tweet_detail_content">
+    tools:showIn="@layout/tweet_detail_activity">
+
+    <ProgressBar
+        android:id="@+id/pbLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"/>
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -206,6 +213,7 @@
                 android:textColor="@color/colorGrey" />
 
             <View
+                android:id="@+id/viewActionDivider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_below="@+id/tvRetweetLabel"
@@ -227,9 +235,9 @@
                 android:id="@+id/ivIconRetweet"
                 android:layout_width="0dp"
                 android:layout_height="32dp"
-                android:layout_below="@+id/tvRetweetLabel"
+                android:layout_alignTop="@id/ivIconReply"
                 android:layout_marginBottom="8dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="-4dp"
                 android:layout_toEndOf="@id/ivIconReply"
                 android:layout_toRightOf="@id/ivIconReply"
                 android:src="@drawable/ic_retweet"
@@ -240,8 +248,8 @@
                 android:layout_width="0dp"
                 android:layout_height="24dp"
                 android:layout_below="@+id/tvRetweetLabel"
+                android:layout_alignTop="@id/ivIconReply"
                 android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/ivIconRetweet"
                 android:layout_toRightOf="@id/ivIconRetweet"
                 android:src="@drawable/ic_like"
@@ -253,7 +261,7 @@
                 android:layout_height="24dp"
                 android:layout_below="@+id/tvRetweetLabel"
                 android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_alignTop="@id/ivIconReply"
                 android:layout_toEndOf="@id/ivIconLike"
                 android:layout_toRightOf="@id/ivIconLike"
                 android:src="@drawable/ic_share"

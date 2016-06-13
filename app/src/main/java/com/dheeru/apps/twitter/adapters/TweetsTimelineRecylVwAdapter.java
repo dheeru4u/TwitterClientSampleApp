@@ -1,5 +1,6 @@
 package com.dheeru.apps.twitter.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -13,10 +14,14 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.dheeru.apps.twitter.R;
-import com.dheeru.apps.twitter.activities.TimelineActivity;
+import com.dheeru.apps.twitter.activities.BaseTimelineActivity;
 import com.dheeru.apps.twitter.activities.TweetDetailActivity;
+import com.dheeru.apps.twitter.activities.UserProfileActivity;
 import com.dheeru.apps.twitter.models.Tweet;
 import com.dheeru.apps.twitter.utility.CommonUtils;
+import com.dheeru.apps.twitter.utility.TwitterRestApplication;
+import com.dheeru.apps.twitter.utility.TwitterRestClient;
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.malmstein.fenster.controller.SimpleMediaFensterPlayerController;
 import com.malmstein.fenster.view.FensterVideoView;
@@ -27,6 +32,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by dkthaku on 6/3/16.
@@ -221,7 +227,7 @@ public class TweetsTimelineRecylVwAdapter extends RecyclerView.Adapter<RecyclerV
     }
 
 
-    private void configureViewHolderCommon(ViewHolderCommon viewHolder, final Tweet tweet) {
+    private void configureViewHolderCommon(final ViewHolderCommon viewHolder, final Tweet tweet) {
 
         if (tweet.getUser() != null) {
             viewHolder.tvUserName.setText(tweet.getUser().getName());
@@ -229,11 +235,30 @@ public class TweetsTimelineRecylVwAdapter extends RecyclerView.Adapter<RecyclerV
 
             viewHolder.ivUserProfileImage.setImageResource(0);
             Glide.with(mContext).load(tweet.getUser().getProfileImageUrl().replace(".png", "_bigger.png")).error(R.mipmap.mypic).placeholder(R.drawable.ic_launcher).dontAnimate().into(viewHolder.ivUserProfileImage);
+            viewHolder.ivUserProfileImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, UserProfileActivity.class);
+                    intent.putExtra("userId", tweet.getUser().getId());
+                    mContext.startActivity(intent);
+                }
+            });
+
         }
         Log.d(TAG, "configureViewHolderCommon: tweet.getCreatedAt() "+tweet.getCreatedAt());
       // viewHolder.tvRelativeTimestamp.setText(CommonUtils.getFormattedRelativeTimestamp(tweet.getCreatedAt()));
         viewHolder.tvRelativeTimestamp.setText(CommonUtils.getFormattedRelativeTimestamp(tweet.getCreatedAt()));
         // viewHolder.tvRelativeTimestamp.setText(tweet.getCreatedAt().toString());
+
+        long likeCount = tweet.getFavoriteCount();
+        long retweetCount = tweet.getRetweetCount();
+
+        if (likeCount > 0) {
+            viewHolder.tvLikes.setVisibility(View.VISIBLE);
+            viewHolder.tvLikes.setText(CommonUtils.formatNumber(likeCount));
+        } else {
+            viewHolder.tvLikes.setVisibility(View.GONE);
+        }
 
         if (tweet.getFavoriteCount() > 0) {
             viewHolder.tvLikes.setVisibility(View.VISIBLE);
@@ -252,13 +277,160 @@ public class TweetsTimelineRecylVwAdapter extends RecyclerView.Adapter<RecyclerV
         viewHolder.ivIconReply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "setOnClickListener", Toast.LENGTH_LONG);
-               ((TimelineActivity)mContext).renderReplyFragment(tweet);
+                // Toast.makeText(mContext, "setOnClickListener", Toast.LENGTH_LONG);
+               ((BaseTimelineActivity)mContext).renderReplyFragment(tweet);
             }
         });
 
-       CommonUtils.unwrapAndRenderTweetTextLinks(mContext, tweet, viewHolder.ivMedia, viewHolder.fvvVideo, viewHolder.mfpcVideo, viewHolder.ivIconVideo, viewHolder.tvText);
+        if (tweet.isFavorited()) {
+            viewHolder.ivIconLike.setImageDrawable(mContext.getResources().getDrawable(R.mipmap.ic_like_red));
+        } else {
+            viewHolder.ivIconLike.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_like));
+        }
 
+        if (tweet.isRetweeted()) {
+            viewHolder.ivIconRetweet.setImageDrawable(mContext.getResources().getDrawable(R.mipmap.ic_retweet_green));
+        } else {
+            viewHolder.ivIconRetweet.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_retweet));
+        }
+
+        viewHolder.ivIconLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TwitterRestClient twitterClient = TwitterRestApplication.getRestClient();
+                if (tweet.isFavorited()) {
+                    updateUnLike(tweet, viewHolder);
+                    twitterClient.postUnlike((Activity) mContext, new TextHttpResponseHandler() {
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                            Toast.makeText(mContext, "Sorry, Unfavourite couldn't be performed. Please try again.", Toast.LENGTH_LONG).show();
+                            updateLike(tweet, viewHolder);
+                        }
+
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, String responseString) {
+
+                        }
+                    }, tweet.getId());
+
+                } else {
+                    updateLike(tweet, viewHolder);
+                    twitterClient.postLike((Activity) mContext, new TextHttpResponseHandler() {
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                            Toast.makeText(mContext, "Sorry, Favourite couldn't be performed. Please try again.", Toast.LENGTH_LONG).show();
+                            updateUnLike(tweet, viewHolder);
+                        }
+
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, String responseString) {
+
+                        }
+                    }, tweet.getId());
+
+//                    Animator anim = AnimatorInflater.loadAnimator(mContext, R.animator.slide_up);
+//                    anim.setTarget(viewHolder.ivIconLike);
+//                    anim.start();
+                }
+            }
+        });
+
+        viewHolder.ivIconRetweet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TwitterRestClient twitterClient = TwitterRestApplication.getRestClient();
+                if (tweet.isRetweeted()) {
+                    updateUnRetweet(tweet, viewHolder);
+                    twitterClient.postUnRetweet((Activity) mContext, new TextHttpResponseHandler() {
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                            Toast.makeText(mContext, "Sorry, Unretweet couldn't be performed. Please try again.", Toast.LENGTH_LONG).show();
+                            updateRetweet(tweet, viewHolder);
+                        }
+
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, String responseString) {
+
+                        }
+                    }, tweet.getId());
+                } else {
+                    updateRetweet(tweet, viewHolder);
+                    twitterClient.postRetweet((Activity) mContext, new TextHttpResponseHandler() {
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                            Toast.makeText(mContext, "Sorry, Retweet couldn't be performed. Please try again.", Toast.LENGTH_LONG).show();
+                            updateUnRetweet(tweet, viewHolder);
+                        }
+
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, String responseString) {
+
+                        }
+                    }, tweet.getId());
+                }
+            }
+        });
+
+
+        CommonUtils.unwrapAndRenderTweetTextLinks(mContext, tweet, viewHolder.ivMedia, viewHolder.fvvVideo, viewHolder.mfpcVideo, viewHolder.ivIconVideo, viewHolder.tvText);
+
+    }
+
+
+    public void updateRetweet(Tweet tweet, ViewHolderCommon viewHolder) {
+        long retweetCount = tweet.getRetweetCount();
+        viewHolder.ivIconRetweet.setImageDrawable(mContext.getResources().getDrawable(R.mipmap.ic_retweet_green));
+        tweet.setRetweeted(true);
+        retweetCount += 1;
+        tweet.setRetweetCount((int) retweetCount);
+        if (retweetCount > 0) {
+            viewHolder.tvRetweets.setVisibility(View.VISIBLE);
+            viewHolder.tvRetweets.setText(CommonUtils.formatNumber(retweetCount));
+        } else {
+            viewHolder.tvRetweets.setVisibility(View.GONE);
+        }
+    }
+
+    public void updateUnRetweet(Tweet tweet, ViewHolderCommon viewHolder) {
+        long retweetCount = tweet.getRetweetCount();
+        viewHolder.ivIconRetweet.setImageDrawable(mContext.getResources().getDrawable(R.mipmap.ic_retweet));
+        tweet.setRetweeted(false);
+        retweetCount -= 1;
+        tweet.setRetweetCount((int) retweetCount);
+        if (retweetCount > 0) {
+            viewHolder.tvRetweets.setVisibility(View.VISIBLE);
+            viewHolder.tvRetweets.setText(CommonUtils.formatNumber(retweetCount));
+        } else {
+            viewHolder.tvRetweets.setVisibility(View.GONE);
+        }
+    }
+
+    public void updateLike(Tweet tweet, ViewHolderCommon viewHolder) {
+        long likeCount = tweet.getFavoriteCount();
+        viewHolder.ivIconLike.setImageDrawable(mContext.getResources().getDrawable(R.mipmap.ic_like_red));
+        tweet.setFavorited(true);
+        likeCount += 1;
+        tweet.setFavoriteCount((int) likeCount);
+        if (likeCount > 0) {
+            viewHolder.tvLikes.setVisibility(View.VISIBLE);
+            viewHolder.tvLikes.setText(CommonUtils.formatNumber(likeCount));
+        } else {
+            viewHolder.tvLikes.setVisibility(View.GONE);
+        }
+    }
+
+    public void updateUnLike(Tweet tweet, ViewHolderCommon viewHolder) {
+        long likeCount = tweet.getFavoriteCount();
+        viewHolder.ivIconLike.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_like));
+        tweet.setFavorited(false);
+        likeCount -= 1;
+        tweet.setFavoriteCount((int) likeCount);
+        if (likeCount > 0) {
+            viewHolder.tvLikes.setVisibility(View.VISIBLE);
+            viewHolder.tvLikes.setText(CommonUtils.formatNumber(likeCount));
+        } else {
+            viewHolder.tvLikes.setVisibility(View.GONE);
+        }
     }
 
 }

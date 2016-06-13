@@ -48,6 +48,7 @@ public class CommonUtils {
     static final String TAG = CommonUtils.class.getSimpleName();
     public static final String DATE_FORMAT = "ccc MMM dd hh:mm:ss Z yyyy";
 
+
     public static String getFormattedTimestamp(String date) {
 
         try {
@@ -249,6 +250,32 @@ public class CommonUtils {
     }
 
     public static SpannableString formatTweetText(Context context, String text) {
+        SpannableString captionSpannableString = new SpannableString(text);
+        Pattern pattern = Pattern.compile("[#|@].+?\\b");
+        Matcher matcher = pattern.matcher(text);
+        while (matcher.find()) {
+            int start = matcher.start();
+            int end = matcher.end();
+            ForegroundColorSpan tagMentionColorSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.colorPrimary));
+            captionSpannableString.setSpan(tagMentionColorSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        return captionSpannableString;
+    }
+
+    public static String formatNumber(long number){
+        if(number < 1000){
+            return String.valueOf(number);
+        } else if (number < 1000000){
+            float value = (float) number / 1000;
+            String formatted = String.format("%.2f", value);
+            return formatted + "K";
+        } else {
+            float value = (float) number / 1000000;
+            String formatted = String.format("%.2f", value);
+            return formatted + "M";
+        }
+    }
+    public static SpannableString formatTwitterText(Context context, String text) {
         SpannableString captionSpannableString = new SpannableString(text);
         Pattern pattern = Pattern.compile("[#|@].+?\\b");
         Matcher matcher = pattern.matcher(text);

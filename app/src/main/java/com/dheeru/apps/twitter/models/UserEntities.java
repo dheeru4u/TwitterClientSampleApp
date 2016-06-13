@@ -57,4 +57,12 @@ public class UserEntities {
             }
         }
     }
+
+    public UrlEntities getUrl() {
+        return url;
+    }
+
+    public UrlEntities getDescription() {
+        return description;
+    }
 }

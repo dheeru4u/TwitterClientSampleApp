@@ -1,26 +1,27 @@
 package com.dheeru.apps.twitter.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.dheeru.apps.twitter.R;
-import com.dheeru.apps.twitter.TwitterRestApplication;
-import com.dheeru.apps.twitter.TwitterRestClient;
 import com.dheeru.apps.twitter.fragments.ComposeFragment;
 import com.dheeru.apps.twitter.models.Tweet;
 import com.dheeru.apps.twitter.utility.CommonUtils;
+import com.dheeru.apps.twitter.utility.TwitterRestApplication;
+import com.dheeru.apps.twitter.utility.TwitterRestClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.malmstein.fenster.controller.SimpleMediaFensterPlayerController;
@@ -36,8 +37,9 @@ import cz.msebera.android.httpclient.Header;
  * Created by dkthaku on 6/3/16.
  */
 public class TweetDetailActivity extends AppCompatActivity implements ComposeFragment.OnFragmentInteractionListener {
+
     TwitterRestClient mTwitterClient;
-    static final String TAG=TweetDetailActivity.class.getSimpleName();
+
     @Bind(R.id.ivUserProfileImage)
     RoundedImageView ivUserProfileImage;
 
@@ -113,32 +115,33 @@ public class TweetDetailActivity extends AppCompatActivity implements ComposeFra
     @Bind(R.id.ivIconShare)
     ImageView ivIconShare;
 
+    @Bind(R.id.viewActionDivider)
+    View viewActionDivider;
+
+    @Bind(R.id.pbLoading)
+    ProgressBar pbLoading;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-            setContentView(R.layout.tweet_detail_activity);
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
-            ButterKnife.bind(this);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayUseLogoEnabled(true);
-            getSupportActionBar().setLogo(R.drawable.ic_twitter_bird);
+        setContentView(R.layout.tweet_detail_activity);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ButterKnife.bind(this);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setLogo(R.drawable.ic_twitter_bird);
 
-            Tweet tweet =(Tweet) Parcels.unwrap(getIntent().getParcelableExtra("tweet"));
-            Log.d(TAG, "onCreate: tweet : "+tweet);
-           int position = getIntent().getIntExtra("position", 1);
-            Log.d(TAG, "onCreate: position "+position);
-            if (tweet.getRetweetedStatus() != null) {
-                renderRetweet(tweet);
-            } else {
-                render(tweet);
-            }
 
-            mTwitterClient = TwitterRestApplication.getRestClient();
-        }catch (Exception e){
-            e.printStackTrace();
+        Tweet tweet = Parcels.unwrap(getIntent().getParcelableExtra("tweet"));
+
+        if (tweet.getRetweetedStatus() != null) {
+            renderRetweet(tweet);
+        } else {
+            render(tweet);
         }
+
+        mTwitterClient = TwitterRestApplication.getRestClient();
     }
 
     private void renderRetweet(Tweet tweet) {
@@ -149,38 +152,65 @@ public class TweetDetailActivity extends AppCompatActivity implements ComposeFra
     }
 
     private void render(final Tweet tweet) {
-        Log.d(TAG, "render: tweet "+tweet);
+
         if (tweet.getUser() != null) {
             ivUserProfileImage.setImageResource(0);
             Glide.with(this).load(tweet.getUser().getProfileImageUrl()).error(R.drawable.photo_placeholder).placeholder(R.drawable.photo_placeholder).dontAnimate().into(ivUserProfileImage);
+            ivUserProfileImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(TweetDetailActivity.this, UserProfileActivity.class);
+                    intent.putExtra("userId", tweet.getUser().getId());
+                    startActivity(intent);
+                }
+            });
             tvUserName.setText(tweet.getUser().getName());
             tvScreenName.setText("@" + tweet.getUser().getScreenName());
             tvReplyPlaceholder.setText("Reply to " + tweet.getUser().getName());
         }
+
         CommonUtils.unwrapAndRenderTweetTextLinks(this, tweet, ivMedia, fvvVideo, mfpcVideo, ivIconVideo, tvText);
         tvCreationTimestamp.setText(CommonUtils.getFormattedTimestamp(tweet.getCreatedAt()));
+       // DateTime createdAt = new DateTime(tweet.getCreatedAt());
+       // DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("h:mm a - dd MMM yy");
+        //tvCreationTimestamp.setText(dateTimeFormatter.print(createdAt));
 
         if (tweet.getRetweetCount() > 0) {
             if (tweet.getRetweetCount() > 1) {
                 tvRetweetLabel.setText(getString(R.string.retweet) + "s");
             }
-            tvRetweetNumber.setText(String.valueOf(tweet.getRetweetCount()));
+            tvRetweetNumber.setText(CommonUtils.formatNumber(tweet.getRetweetCount()));
         } else {
-            tvRetweetLabel.setVisibility(View.INVISIBLE);
+            tvRetweetLabel.setVisibility(View.GONE);
+            tvRetweetNumber.setVisibility(View.GONE);
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) viewActionDivider.getLayoutParams();
+            layoutParams.addRule(RelativeLayout.BELOW, R.id.tvLikeNumber);
+            viewActionDivider.setLayoutParams(layoutParams);
+            layoutParams = (RelativeLayout.LayoutParams) ivIconReply.getLayoutParams();
+            layoutParams.addRule(RelativeLayout.BELOW, R.id.tvLikeNumber);
+            ivIconReply.setLayoutParams(layoutParams);
         }
 
         if (tweet.getFavoriteCount() > 0) {
             if (tweet.getFavoriteCount() > 1) {
                 tvLikeLabel.setText(getString(R.string.like) + "s");
             }
-            tvLikeNumber.setText(String.valueOf(tweet.getFavoriteCount()));
+            tvLikeNumber.setText(CommonUtils.formatNumber(tweet.getFavoriteCount()));
         } else {
-            tvLikeLabel.setVisibility(View.INVISIBLE);
+            tvLikeLabel.setVisibility(View.GONE);
+            tvLikeNumber.setVisibility(View.GONE);
         }
 
-        if (tweet.getFavoriteCount() == 0 && tweet.getRetweetCount() == 0) {
-            tvRetweetLabel.setVisibility(View.GONE);
-            tvLikeLabel.setVisibility(View.GONE);
+        if (tweet.isFavorited()) {
+            ivIconLike.setImageDrawable(this.getResources().getDrawable(R.mipmap.ic_like_red));
+        } else {
+            ivIconLike.setImageDrawable(this.getResources().getDrawable(R.drawable.ic_like));
+        }
+
+        if (tweet.isRetweeted()) {
+            ivIconRetweet.setImageDrawable(this.getResources().getDrawable(R.mipmap.ic_retweet_green));
+        } else {
+            ivIconRetweet.setImageDrawable(this.getResources().getDrawable(R.drawable.ic_retweet));
         }
 
 
@@ -223,7 +253,7 @@ public class TweetDetailActivity extends AppCompatActivity implements ComposeFra
                         @Override
                         public void onClick(View v) {
                             rlReplyBox.setVisibility(View.GONE);
-                            postMessage(tweet.getTweetId(), etReply.getText().toString());
+                            postMessage(tweet.getId(), etReply.getText().toString());
                         }
                     });
                 }
@@ -236,6 +266,81 @@ public class TweetDetailActivity extends AppCompatActivity implements ComposeFra
                 renderReplyFragment(tweet);
             }
         });
+
+        ivIconLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TwitterRestClient twitterClient = TwitterRestApplication.getRestClient();
+                if (tweet.isFavorited()) {
+                    updateUnLike(tweet);
+                    twitterClient.postUnlike(TweetDetailActivity.this, new TextHttpResponseHandler() {
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                            Toast.makeText(TweetDetailActivity.this, "Sorry, Unfavourite couldn't be performed. Please try again.", Toast.LENGTH_LONG).show();
+                            updateLike(tweet);
+                        }
+
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, String responseString) {
+
+                        }
+                    }, tweet.getId());
+
+                } else {
+                    updateLike(tweet);
+                    twitterClient.postLike(TweetDetailActivity.this, new TextHttpResponseHandler() {
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                            Toast.makeText(TweetDetailActivity.this, "Sorry, Favourite couldn't be performed. Please try again.", Toast.LENGTH_LONG).show();
+                            updateUnLike(tweet);
+                        }
+
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, String responseString) {
+
+                        }
+                    }, tweet.getId());
+                }
+            }
+        });
+
+        ivIconRetweet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TwitterRestClient twitterClient = TwitterRestApplication.getRestClient();
+                if (tweet.isRetweeted()) {
+                    updateUnRetweet(tweet);
+                    twitterClient.postUnRetweet(TweetDetailActivity.this, new TextHttpResponseHandler() {
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                            Toast.makeText(TweetDetailActivity.this, "Sorry, Unretweet couldn't be performed. Please try again.", Toast.LENGTH_LONG).show();
+                            updateRetweet(tweet);
+                        }
+
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, String responseString) {
+
+                        }
+                    }, tweet.getId());
+                } else {
+                    updateRetweet(tweet);
+                    twitterClient.postRetweet(TweetDetailActivity.this, new TextHttpResponseHandler() {
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                            Toast.makeText(TweetDetailActivity.this, "Sorry, Retweet couldn't be performed. Please try again.", Toast.LENGTH_LONG).show();
+                            updateUnRetweet(tweet);
+                        }
+
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, String responseString) {
+
+                        }
+                    }, tweet.getId());
+                }
+            }
+        });
+
+
     }
 
     public void renderReplyFragment(Tweet tweet) {
@@ -250,7 +355,6 @@ public class TweetDetailActivity extends AppCompatActivity implements ComposeFra
             @Override
             public void onSuccess(int statusCode, Header[] headers, String response) {
                 response = "[" + response + "]";
-                TimelineActivity.loadTweets(response, 0);
                 Toast.makeText(TweetDetailActivity.this, "Reply sent Successfully!", Toast.LENGTH_LONG).show();
             }
 
@@ -261,4 +365,67 @@ public class TweetDetailActivity extends AppCompatActivity implements ComposeFra
         }, id, message);
     }
 
+    public void updateRetweet(Tweet tweet) {
+        long retweetCount = tweet.getRetweetCount();
+        ivIconRetweet.setImageDrawable(this.getResources().getDrawable(R.mipmap.ic_retweet_green));
+        tweet.retweeted=true;
+        retweetCount += 1;
+        tweet.retweetCount= (int) retweetCount;
+        if (retweetCount > 0) {
+            tvRetweetNumber.setVisibility(View.VISIBLE);
+            tvRetweetLabel.setVisibility(View.VISIBLE);
+            tvRetweetNumber.setText(CommonUtils.formatNumber(retweetCount));
+        } else {
+            tvRetweetNumber.setVisibility(View.GONE);
+            tvRetweetLabel.setVisibility(View.GONE);
+        }
+    }
+
+    public void updateUnRetweet(Tweet tweet) {
+        long retweetCount = tweet.getRetweetCount();
+        ivIconRetweet.setImageDrawable(this.getResources().getDrawable(R.drawable.ic_retweet));
+        tweet.retweeted=false;
+        retweetCount -= 1;
+        tweet.retweetCount= (int) retweetCount;
+        if (retweetCount > 0) {
+            tvRetweetNumber.setVisibility(View.VISIBLE);
+            tvRetweetLabel.setVisibility(View.VISIBLE);
+            tvRetweetNumber.setText(CommonUtils.formatNumber(retweetCount));
+        } else {
+            tvRetweetNumber.setVisibility(View.GONE);
+            tvRetweetLabel.setVisibility(View.GONE);
+        }
+    }
+
+    public void updateLike(Tweet tweet) {
+        long likeCount = tweet.getFavoriteCount();
+        ivIconLike.setImageDrawable(this.getResources().getDrawable(R.mipmap.ic_like_red));
+        tweet.setFavorited(true);
+        likeCount += 1;
+        tweet.setFavoriteCount(Integer.getInteger(likeCount+""));
+        if (likeCount > 0) {
+            tvLikeNumber.setVisibility(View.VISIBLE);
+            tvLikeLabel.setVisibility(View.VISIBLE);
+            tvLikeNumber.setText(CommonUtils.formatNumber(likeCount));
+        } else {
+            tvLikeNumber.setVisibility(View.GONE);
+            tvLikeLabel.setVisibility(View.GONE);
+        }
+    }
+
+    public void updateUnLike(Tweet tweet) {
+        long likeCount = tweet.getFavoriteCount();
+        ivIconLike.setImageDrawable(this.getResources().getDrawable(R.drawable.ic_like));
+        tweet.setFavorited(false);
+        likeCount -= 1;
+        tweet.setFavoriteCount(Integer.getInteger(likeCount+""));
+        if (likeCount > 0) {
+            tvLikeNumber.setVisibility(View.VISIBLE);
+            tvLikeLabel.setVisibility(View.VISIBLE);
+            tvLikeNumber.setText(CommonUtils.formatNumber(likeCount));
+        } else {
+            tvLikeNumber.setVisibility(View.GONE);
+            tvLikeLabel.setVisibility(View.GONE);
+        }
+    }
 }

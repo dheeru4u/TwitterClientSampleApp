@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Thakur Twitter App</string>
+    <string name="app_name">Thakur Twitter Redux App</string>
     <string name="title_activity_timeline">TimelineActivity</string>
     <string name="welcome">Welcome to Thakur.</string>
     <string name="title_activity_tweet_detail">Tweet</string>
@@ -15,5 +15,19 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="login_label">Log In</string>
     <string name="user">Me</string>
+
+
+    <string name="profile">Profile</string>
+    <string name="following">following</string>
+    <string name="followers">followers</string>
+    <string name="search">Search</string>
+    <string name="dm">DM</string>
+
+
+    <string name="title_activity_user_profile">UserProfileActivity</string>
+    <string name="title_activity_friends">Following</string>
+    <string name="title_activity_followers">Followers</string>
+    <string name="title_activity_search">SearchActivity</string>
+    <string name="title_activity_direct_message">Messages</string>
 
 </resources>

@@ -56,14 +56,14 @@ public class Tweet  {
      * users.
      */
     @SerializedName("favorite_count")
-    public final Integer favoriteCount;
+    public  Integer favoriteCount;
 
     /**
      * Nullable. Perspectival. Indicates whether this Tweet has been favorited by the authenticating
      * user.
      */
     @SerializedName("favorited")
-    public final boolean favorited;
+    public  boolean favorited;
 
     /**
      * Indicates the maximum value of the filter_level parameter which may be used and still stream
@@ -160,13 +160,13 @@ public class Tweet  {
      * not turn into a String for "100+"
      */
     @SerializedName("retweet_count")
-    public final int retweetCount;
+    public  int retweetCount;
 
     /**
      * Perspectival. Indicates whether this Tweet has been retweeted by the authenticating user.
      */
     @SerializedName("retweeted")
-    public final boolean retweeted;
+    public boolean retweeted;
 
     /**
      * Users can amplify the broadcast of tweets authored by other users by retweeting. Retweets can
@@ -308,7 +308,23 @@ public class Tweet  {
         this.withheldScope = null;
     }
 
-// */
+    public void setFavoriteCount(Integer favoriteCount) {
+        this.favoriteCount = favoriteCount;
+    }
+
+    public void setFavorited(boolean favorited) {
+        this.favorited = favorited;
+    }
+
+    public void setRetweetCount(int retweetCount) {
+        this.retweetCount = retweetCount;
+    }
+
+    public void setRetweeted(boolean retweeted) {
+        this.retweeted = retweeted;
+    }
+
+    // */
     public long getTweetId() {
         return this.id;
     }
@@ -432,6 +448,7 @@ public class Tweet  {
         return user;
     }
 
+
     @Override
     public String toString() {
         return "Tweet{" +
@@ -466,5 +483,7 @@ public class Tweet  {
                 ", withheldScope='" + withheldScope + '\'' +
                 '}';
     }
+
+
 
 }

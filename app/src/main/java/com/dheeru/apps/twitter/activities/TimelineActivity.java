@@ -21,10 +21,9 @@ import android.widget.Toast;
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
 import com.activeandroid.util.Log;
-import com.dheeru.apps.twitter.LoginActivity;
 import com.dheeru.apps.twitter.R;
-import com.dheeru.apps.twitter.TwitterRestApplication;
-import com.dheeru.apps.twitter.TwitterRestClient;
+import com.dheeru.apps.twitter.utility.TwitterRestApplication;
+import com.dheeru.apps.twitter.utility.TwitterRestClient;
 import com.dheeru.apps.twitter.adapters.TweetsTimelineRecylVwAdapter;
 import com.dheeru.apps.twitter.fragments.ComposeFragment;
 import com.dheeru.apps.twitter.listeners.TweetsEndlessRecyScrollListener;
@@ -294,78 +293,16 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
 
 
     public void saveTweetsToDB(List<Tweet> tweets) {
-        for (Tweet tweet : tweets) {
-          //  tweet.save();
-            saveToDBHelper(tweet);
 
-            Tweet retweetStatus = tweet.getRetweetedStatus();
-            if (retweetStatus != null) {
-              //  retweetStatus.retweeted_tweet = tweet;
-              //  retweetStatus.save();
-
-                saveToDBHelper(retweetStatus);
-            }
-        }
     }
 
     private void saveToDBHelper(Tweet tweet) {
-        /**
-        User user = tweet.getUser();
-        user.tweet = tweet;
-        user.save();
 
-        Entities___ entities = tweet.getEntities();
-        entities.tweet = tweet;
-        entities.save();
-
-
-        for (Url_____ url : entities.getUrls()) {
-            url.entities = entities;
-            url.save();
-        }
-
-        ExtendedEntities_ extendedEntities = tweet.getExtendedEntities();
-        if (extendedEntities != null) {
-            extendedEntities.tweet = tweet;
-            extendedEntities.save();
-
-            for (Medium______ medium : extendedEntities.getMedia()) {
-                medium.extendedentities = extendedEntities;
-                medium.save();
-
-                VideoInfo videoInfo = medium.getVideoInfo();
-                if (videoInfo != null) {
-                    videoInfo.medium = medium;
-                    videoInfo.save();
-
-                    for (Variant variant : videoInfo.getVariants()) {
-                        variant.videoInfo = videoInfo;
-                        variant.save();
-                    }
-                }
-            }
-        }
-         **/
     }
 
     public void loadTweetsFromDB() {
 
-        /**
-        List<Tweet> tweets = Tweet.getAllTweetsFromDB();
-        for (Tweet tweet : tweets) {
-            tweet.populateUserFromDB();
-            tweet.populateEntitiesFromDB();
-            tweet.populateExtendedEntitiesFromDB();
-            tweet.populateRetweetFromDB();
-            if (tweet.retweetedStatus != null) {
-                tweet.retweetedStatus.populateUserFromDB();
-                tweet.retweetedStatus.populateEntitiesFromDB();
-                tweet.retweetedStatus.populateExtendedEntitiesFromDB();
-            }
-        }
-        mTweets.addAll(tweets);
-        mTweetsRecyclerViewAdapter.notifyItemRangeInserted(0, tweets.size());
-         **/
+
     }
 
 
